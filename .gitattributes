@@ -1,12 +1,12 @@
 # Documentation
 docs/** linguist-documentation
 
-# Ignore heavy frontend files to keep Go dominant
-extension/styles.css linguist-vendored
-extension/popup.html linguist-vendored
+# FORCE content.js to be treated as plain text (removes it from language bar)
+extension/content.js linguist-language=Text
+extension/styles.css linguist-language=Text
+extension/popup.html linguist-language=Text
+extension/manifest.json linguist-language=JSON
 extension/icons/** linguist-vendored
 
-# Hide content.js (it is the largest JS file) to reduce JS stats
-extension/content.js linguist-vendored
-
-# background.js will remain visible to represent the JS presence
+# background.js will be the ONLY file counting as JavaScript
+extension/background.js linguist-detectable=true
