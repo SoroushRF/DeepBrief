@@ -1,6 +1,10 @@
 # 🧠 DeepBrief
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Go](https://img.shields.io/badge/Go-1.21-blue.svg)](https://golang.org/) [![Gemini AI](https://img.shields.io/badge/AI-Gemini_2.5-purple.svg)](https://deepmind.google/technologies/gemini/) [![Cloud Run](https://img.shields.io/badge/Cloud-Google_Run-orange.svg)](https://cloud.google.com/run) [![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-green.svg)](https://developer.chrome.com/docs/extensions/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+[![Go](https://img.shields.io/badge/Go-1.21-00ADD8?style=for-the-badge&logo=go&logoColor=white)](https://golang.org/)
+[![Gemini 2.5](https://img.shields.io/badge/Gemini_2.5-FLASH_LITE-8E75B2?style=for-the-badge&logo=google-bard&logoColor=white)](https://deepmind.google/technologies/gemini/)
+[![Google Cloud Run](https://img.shields.io/badge/Cloud_Run-Deployed-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)](https://cloud.google.com/run)
+[![Manifest V3](https://img.shields.io/badge/Chrome-Manifest_V3-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white)](https://developer.chrome.com/docs/extensions/)
 
 > **"Like a university professor in your pocket."**
 
@@ -42,16 +46,16 @@ graph LR
 ## 🛠️ Tech Stack
 
 ### 🖥️ Frontend (Extension)
-- **Core:** ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black) **Vanilla JS (ES6+)**
-- **Styling:** ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white) **CSS3 (Variables, Flexbox, Animations)**
-- **Isolation:** **Shadow DOM** (Prevents style conflicts)
-- **Runtime:** **Manifest V3** Service Worker
+- **Core:** ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+- **Styling:** ![CSS3](https://img.shields.io/badge/CSS3-Modern-1572B6?style=flat-square&logo=css3&logoColor=white)
+- **Isolation:** ![Shadow DOM](https://img.shields.io/badge/Web_Components-Shadow_DOM-E34F26?style=flat-square&logo=html5&logoColor=white)
+- **Framework:** ![Chrome Extension](https://img.shields.io/badge/Chrome_Extension-Manifest_V3-4285F4?style=flat-square&logo=google-chrome&logoColor=white)
 
 ### ☁️ Backend (API)
-- **Language:** ![Go](https://img.shields.io/badge/Go-00ADD8?style=flat-square&logo=go&logoColor=white) **Go 1.21**
-- **AI Model:** **Google Gemini 2.5 Flash Lite**
-- **Infrastructure:** **Google Cloud Run (Serverless)**
-- **Containerization:** **Docker** (Multi-stage build)
+- **Language:** ![Go](https://img.shields.io/badge/Go-1.21-00ADD8?style=flat-square&logo=go&logoColor=white)
+- **AI Model:** ![Gemini](https://img.shields.io/badge/Google_AI-Gemini_2.5-8E75B2?style=flat-square&logo=google-bard&logoColor=white)
+- **Infrastructure:** ![Google Cloud Run](https://img.shields.io/badge/Google_Cloud-Run-4285F4?style=flat-square&logo=google-cloud&logoColor=white)
+- **Container:** ![Docker](https://img.shields.io/badge/Docker-Container-2496ED?style=flat-square&logo=docker&logoColor=white)
 
 ---
 
