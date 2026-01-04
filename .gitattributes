@@ -1,0 +1,3 @@
+# Ignore extension files for GitHub language statistics
+extension/** linguist-vendored
+docs/** linguist-documentation
