@@ -23,7 +23,7 @@
     {
       "matches": ["<all_urls>"],
       "js": ["content.js"],
-      // "css": ["styles.css"], // We inject this manually in shadow DOM now
+
       "run_at": "document_end"
     }
   ],

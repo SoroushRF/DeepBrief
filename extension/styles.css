@@ -1,68 +1,184 @@
-/* DeepBrief Floating Tooltip Styles */
+/* DeepBrief Floating Tooltip Styles - Luxury Edition */
 
 .deepbrief-container {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.6;
   color: #1f2937;
-  width: 320px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  width: 340px; /* Slightly wider for better readability */
+  background: rgba(255, 255, 255, 0.95); /* Slight transparency */
+  backdrop-filter: blur(12px); /* Glassmorphism effect */
+  border-radius: 16px; /* Smooth heavy rounding */
+  box-shadow: 
+    0 10px 40px -10px rgba(0, 0, 0, 0.15), 
+    0 0 20px -5px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset; /* Inner light border */
+  border: 1px solid rgba(0, 0, 0, 0.08);
   position: absolute;
-  z-index: 2147483647; /* Maximum z-index to stay on top */
+  z-index: 9999999;
   opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateY(12px) scale(0.98);
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: auto;
   overflow: hidden;
 }
 
 .deepbrief-container.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 .deepbrief-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 12px 16px;
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); /* Deep Indigo Premium */
+  padding: 14px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 2;
 }
 
 .deepbrief-logo {
-  font-weight: 600;
-  font-size: 13px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+/* Action Buttons (Copy & Close) */
+.deepbrief-actions {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-/* Close button */
+/* Shared styles for both icon buttons */
+.deepbrief-icon-btn, 
 .deepbrief-close {
-  cursor: pointer;
-  opacity: 0.8;
-  transition: opacity 0.2s;
-  background: none;
+  -webkit-appearance: none;
+  appearance: none;
   border: none;
+  outline: none;
+  box-shadow: none;
+  background: rgba(255, 255, 255, 0.15);
+  cursor: pointer;
   color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px; /* Softer rounding */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
   padding: 0;
-  font-size: 16px;
-  line-height: 1;
+  margin: 0;
 }
 
+.deepbrief-icon-btn svg,
+.deepbrief-close svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.5px; /* Slightly bolder */
+}
+
+/* Hover States */
+.deepbrief-icon-btn:hover,
 .deepbrief-close:hover {
-  opacity: 1;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.deepbrief-icon-btn:active,
+.deepbrief-close:active {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(0);
+}
+
+/* Specific styling if needed, but shared class handles most */
+.deepbrief-close {
+  background: transparent; /* Close button can be subtler by default */
+}
+.deepbrief-close:hover {
+  background: rgba(255, 59, 48, 0.2) !important; /* Red tint on hover for close */
+  color: #ffcccc;
+}
+
+/* Tabs - Clean Modern Style */
+.deepbrief-tabs {
+  display: flex;
+  background: #f8fafc;
+  padding: 4px;
+  gap: 4px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.deepbrief-tab {
+  flex: 1;
+  padding: 8px 0;
+  border: none;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 8px;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  letter-spacing: 0.02em;
+}
+
+.deepbrief-tab:hover {
+  color: #334155;
+  background: rgba(0,0,0,0.03);
+}
+
+.deepbrief-tab.active {
+  color: #312e81; /* Indigo 900 */
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  font-weight: 700;
 }
 
 .deepbrief-content {
-  padding: 16px;
-  max-height: 300px;
+  padding: 20px;
+  max-height: 320px;
   overflow-y: auto;
   position: relative;
+  min-height: 100px;
+  background: white;
+}
+
+/* Animation for text switching */
+.deepbrief-explanation {
+  color: #334155; /* Slate 700 */
+  font-size: 14px;
+  line-height: 1.6;
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom Scrollbar */
+.deepbrief-content::-webkit-scrollbar {
+  width: 6px;
+}
+.deepbrief-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.deepbrief-content::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.1);
+  border-radius: 10px;
+}
+.deepbrief-content::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0,0,0,0.2);
 }
 
 /* Loading State */
@@ -70,18 +186,21 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 20px 0;
-  color: #6b7280;
+  justify-content: center;
+  gap: 12px;
+  padding: 30px 0;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .spinner {
-  width: 24px;
-  height: 24px;
-  border: 3px solid rgba(102, 126, 234, 0.2);
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(49, 46, 129, 0.1);
   border-radius: 50%;
-  border-top-color: #667eea;
-  animation: spin 1s linear infinite;
+  border-top-color: #312e81; /* Indigo 800 */
+  animation: spin 0.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite;
 }
 
 @keyframes spin {
@@ -90,28 +209,24 @@
 
 /* Text styles */
 .deepbrief-term {
-  font-weight: 600;
-  color: #4b5563;
-  margin-bottom: 8px;
-  font-size: 12px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 12px;
+  font-size: 13px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.deepbrief-explanation {
-  color: #1f2937;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 8px;
+  display: inline-block;
 }
 
 /* Error State */
 .deepbrief-error {
-  color: #ef4444;
+  color: #dc2626;
   text-align: center;
-  padding: 10px;
-}
-
-/* Icon (SVG embedded in CSS for simplicity or injected via JS) */
-.icon-brain {
-  width: 16px;
-  height: 16px;
-  fill: currentColor;
+  padding: 15px;
+  font-weight: 500;
+  background: #fef2f2;
+  border-radius: 8px;
+  margin-top: 10px;
 }

@@ -4,16 +4,8 @@ let host = null;
 let shadow = null;
 let tooltip = null;
 let lastSelectionRect = null;
-
-// Track selection position
-// We'll primarily capture this when the request comes in, but keeping this listener helps too
-document.addEventListener('selectionchange', () => {
-  const selection = window.getSelection();
-  if (selection.rangeCount > 0 && !selection.isCollapsed) {
-    const range = selection.getRangeAt(0);
-    lastSelectionRect = range.getBoundingClientRect();
-  }
-});
+let currentExplanations = null; // Store the 3 versions
+let activeTab = 'simple'; // Default tab
 
 // Listen for messages from background script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -31,21 +23,27 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     showLoader(request.text);
     positionTooltip();
   } else if (request.action === "SHOW_EXPLANATION") {
-    showExplanation(request.original, request.explanation);
+    // Store all 3 versions of the explanation
+    currentExplanations = request.explanation; 
+    // Render the UI with the default tab (Simple)
+    showResult(request.original);
   } else if (request.action === "SHOW_ERROR") {
     showError(request.error);
+  }
+});
+
+// Track selection position
+document.addEventListener('selectionchange', () => {
+  const selection = window.getSelection();
+  if (selection.rangeCount > 0 && !selection.isCollapsed) {
+    const range = selection.getRangeAt(0);
+    lastSelectionRect = range.getBoundingClientRect();
   }
 });
 
 // Close tooltip when clicking outside
 document.addEventListener('mousedown', (e) => {
   if (host && tooltip) {
-    // Check if click target is NOT inside our shadow root
-    // Note: e.target on the page won't be inside shadow DOM
-    // We are safe to close if we see a click on the main document
-    // But we need to make sure we didn't just click inside the tooltip?
-    // Events don't propagate out of shadow DOM easily for this check usually, 
-    // but the 'host' is in the light DOM.
     if (e.target !== host) {
       removeTooltip();
     }
@@ -53,29 +51,24 @@ document.addEventListener('mousedown', (e) => {
 });
 
 function createTooltip() {
-  // Remove existing tooltip if any
   removeTooltip();
 
-  // Create Host
   host = document.createElement('div');
   host.id = 'deepbrief-host';
-  // We attach to body
   document.body.appendChild(host);
 
-  // Create Shadow DOM
   shadow = host.attachShadow({ mode: 'open' });
 
-  // Inject CSS
   const link = document.createElement('link');
   link.setAttribute('rel', 'stylesheet');
   link.setAttribute('href', chrome.runtime.getURL('styles.css'));
   shadow.appendChild(link);
 
-  // Create Container
   tooltip = document.createElement('div');
   tooltip.className = 'deepbrief-container';
   
-  // Header HTML
+  // Initial Skeleton HTML (Header + Content)
+  // Tabs will be injected when content arrives
   const headerHtml = `
     <div class="deepbrief-header">
       <div class="deepbrief-logo">
@@ -85,23 +78,19 @@ function createTooltip() {
     </div>
   `;
 
-  // Content Area
-  const contentHtml = `<div class="deepbrief-content" id="db-content"></div>`;
-
-  tooltip.innerHTML = headerHtml + contentHtml;
+  tooltip.innerHTML = headerHtml + `<div class="deepbrief-content" id="db-content"></div>`;
   shadow.appendChild(tooltip);
 
-  // Add event listener for close button inside shadow DOM
   const closeBtn = tooltip.querySelector('.deepbrief-close');
   closeBtn.addEventListener('click', removeTooltip);
 
-  // Stop clicks inside tooltip from closing it
   tooltip.addEventListener('mousedown', (e) => {
     e.stopPropagation();
   });
 }
 
 function showLoader(term) {
+  console.log("DeepBrief: showing loader");
   const content = shadow.getElementById('db-content');
   content.innerHTML = `
     <div class="deepbrief-term">Explaining: "${term}"</div>
@@ -110,22 +99,118 @@ function showLoader(term) {
       <div>Thinking...</div>
     </div>
   `;
-  // Trigger transition
   requestAnimationFrame(() => {
     tooltip.classList.add('visible');
   });
 }
 
-function showExplanation(term, text) {
-  const content = shadow.getElementById('db-content');
-  // Format the text slightly (simple markdown to html if needed, or just plain text)
-  // For now, we'll just handle newlines
-  const formattedText = text.replace(/\n/g, '<br>');
+function showResult(term) {
+  console.log("DeepBrief: showing result for", term);
+  // Inject the Tabs + Content
+  // We recreate the inner structure to include tabs
   
-  content.innerHTML = `
-    <div class="deepbrief-term">${term}</div>
-    <div class="deepbrief-explanation">${formattedText}</div>
+  // 1. Header with Copy Button
+  const headerHtml = `
+    <div class="deepbrief-header">
+      <div class="deepbrief-logo">
+        🧠 DeepBrief
+      </div>
+      <div class="deepbrief-actions">
+        <button class="deepbrief-icon-btn deepbrief-copy" title="Copy to clipboard">
+          <!-- Copy Icon (SVG) -->
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+        <button class="deepbrief-close" title="Close">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
   `;
+
+  const tabsHtml = `
+    <div class="deepbrief-tabs">
+      <button class="deepbrief-tab ${activeTab === 'concise' ? 'active' : ''}" data-tab="concise">Concise</button>
+      <button class="deepbrief-tab ${activeTab === 'simple' ? 'active' : ''}" data-tab="simple">Simple</button>
+      <button class="deepbrief-tab ${activeTab === 'deep_dive' ? 'active' : ''}" data-tab="deep_dive">Deep Dive</button>
+    </div>
+  `;
+
+  const contentText = currentExplanations[activeTab] || "Processing...";
+  const formattedText = contentText.replace(/\n/g, '<br>');
+
+  const contentHtml = `
+    <div class="deepbrief-content" id="db-content">
+      <div class="deepbrief-term">${term}</div>
+      <div class="deepbrief-explanation">${formattedText}</div>
+    </div>
+  `;
+
+  tooltip.innerHTML = headerHtml + tabsHtml + contentHtml;
+
+  // Re-attach listeners
+  const closeBtn = tooltip.querySelector('.deepbrief-close');
+  closeBtn.addEventListener('click', removeTooltip);
+  
+  // Tabs
+  const tabs = tooltip.querySelectorAll('.deepbrief-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      const selectedTab = e.target.getAttribute('data-tab');
+      switchTab(selectedTab, term);
+    });
+  });
+
+  // Copy Button Logic
+  const copyBtn = tooltip.querySelector('.deepbrief-copy');
+  copyBtn.addEventListener('click', () => {
+    const textToCopy = currentExplanations[activeTab];
+    if (textToCopy) {
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        // Show Feedback (Change icon to checkmark)
+        copyBtn.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        `;
+        setTimeout(() => {
+          // Revert icon after 2 seconds
+          copyBtn.innerHTML = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          `;
+        }, 2000);
+      });
+    }
+  });
+}
+
+function switchTab(newTab, term) {
+  activeTab = newTab;
+  
+  // Update Tab Styling
+  const tabs = tooltip.querySelectorAll('.deepbrief-tab');
+  tabs.forEach(tab => {
+    if (tab.getAttribute('data-tab') === newTab) {
+      tab.classList.add('active');
+    } else {
+      tab.classList.remove('active');
+    }
+  });
+
+  // Update Content
+  const explanationDiv = tooltip.querySelector('.deepbrief-explanation');
+  if (explanationDiv && currentExplanations) {
+    const text = currentExplanations[newTab] || "";
+    explanationDiv.innerHTML = text.replace(/\n/g, '<br>');
+  }
 }
 
 function showError(msg) {
@@ -140,7 +225,6 @@ function showError(msg) {
 function removeTooltip() {
   if (tooltip) {
     tooltip.classList.remove('visible');
-    // Wait for transition to finish before removing from DOM
     setTimeout(() => {
       if (host) {
         host.remove();
@@ -148,6 +232,8 @@ function removeTooltip() {
       host = null;
       shadow = null;
       tooltip = null;
+      currentExplanations = null;
+      activeTab = 'simple'; // Reset to default
     }, 200);
   } else if (host) {
     host.remove();
@@ -157,21 +243,29 @@ function removeTooltip() {
 }
 
 function positionTooltip() {
-  if (!tooltip || !lastSelectionRect) return;
+  const scrollY = window.scrollY || document.documentElement.scrollTop;
+  const scrollX = window.scrollX || document.documentElement.scrollLeft;
 
-  const rect = lastSelectionRect;
-  const scrollTop = window.scrollY || document.documentElement.scrollTop;
-  const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+  let top, left;
 
-  // Position below selection by default
-  let top = rect.bottom + scrollTop + 10;
-  let left = rect.left + scrollLeft;
+  if (lastSelectionRect && lastSelectionRect.width > 0) {
+    // Normal positioning below selection
+    top = lastSelectionRect.bottom + scrollY + 12;
+    left = lastSelectionRect.left + scrollX;
+  } else {
+    // Fallback: Center of screen
+    top = scrollY + (window.innerHeight / 2) - 150;
+    left = scrollX + (window.innerWidth / 2) - 170;
+  }
 
-  // Keep within bounds (basic handling)
-  if (left + 320 > window.innerWidth) {
-    left = window.innerWidth - 330;
+  // Boundary checks
+  if (left + 350 > window.innerWidth + scrollX) {
+    left = (window.innerWidth + scrollX) - 360;
   }
   if (left < 10) left = 10;
+
+  // Ensure it's not off-screen top
+  if (top < scrollY) top = scrollY + 10;
 
   tooltip.style.top = `${top}px`;
   tooltip.style.left = `${left}px`;

@@ -9,11 +9,14 @@ DeepBrief is a full-stack Chrome extension that helps you understand technical j
 ## ✨ Features
 
 - 🎯 **Right-Click to Explain** - Highlight any text and get instant explanations
+- 🧠 **Three Learning Modes**:
+  - **⚡ Concise:** Strict, dictionary-style definition
+  - **💡 Simple:** Creative analogies (ELI5 style)
+  - **🧐 Deep Dive:** History, context, and deeper analysis
 - 🤖 **AI-Powered** - Uses Gemini 2.5 Flash Lite for intelligent, context-aware explanations
 - 🔒 **Secure Architecture** - API keys hidden in backend proxy (not exposed in extension)
 - ⚡ **Fast & Lightweight** - Optimized for speed with minimal overhead
-- 🎨 **Beautiful UI** - Sleek floating tooltips with smooth animations
-- 🌐 **Cloud-Deployed** - Backend hosted on Google Cloud Run (free tier)
+- 🎨 **Beautiful UI** - Sleek floating tooltips with smooth animations & tabs
 
 ---
 

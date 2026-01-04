@@ -20,8 +20,10 @@ type ExplainRequest struct {
 
 // ExplainResponse represents the API response
 type ExplainResponse struct {
-	Explanation string `json:"explanation"`
-	Error       string `json:"error,omitempty"`
+	Concise  string `json:"concise"`
+	Simple   string `json:"simple"`
+	DeepDive string `json:"deep_dive"`
+	Error    string `json:"error,omitempty"`
 }
 
 func main() {
@@ -89,7 +91,7 @@ func handleExplain(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Call Gemini API
-	explanation, err := explainWithGemini(r.Context(), apiKey, req.Text)
+	explanationResp, err := explainWithGemini(r.Context(), apiKey, req.Text)
 	if err != nil {
 		log.Printf("Gemini API error: %v", err)
 		respondWithError(w, "Failed to generate explanation", http.StatusInternalServerError)
@@ -98,16 +100,14 @@ func handleExplain(w http.ResponseWriter, r *http.Request) {
 
 	// Send successful response
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(ExplainResponse{
-		Explanation: explanation,
-	})
+	json.NewEncoder(w).Encode(explanationResp)
 }
 
 // explainWithGemini uses Gemini 2.5 Flash Lite to explain jargon
-func explainWithGemini(ctx context.Context, apiKey, text string) (string, error) {
+func explainWithGemini(ctx context.Context, apiKey, text string) (*ExplainResponse, error) {
 	client, err := genai.NewClient(ctx, option.WithAPIKey(apiKey))
 	if err != nil {
-		return "", fmt.Errorf("failed to create client: %w", err)
+		return nil, fmt.Errorf("failed to create client: %w", err)
 	}
 	defer client.Close()
 
@@ -115,43 +115,55 @@ func explainWithGemini(ctx context.Context, apiKey, text string) (string, error)
 	model := client.GenerativeModel("gemini-2.5-flash-lite")
 
 	// Configure the model
-	model.SetTemperature(0.7)
+	model.SetTemperature(0.4) // Lower temp for more consistent JSON structure
 	model.SetTopP(0.95)
 	model.SetTopK(40)
-	model.SetMaxOutputTokens(500)
+	model.SetMaxOutputTokens(800)
+	model.ResponseMIMEType = "application/json" // Enforce JSON response
 
 	// System instruction for the AI persona
-	systemPrompt := `You are a Helpful Senior Engineer explaining technical jargon to students.
+	systemPrompt := `You are an expert technical explainer specializing in clarifying jargon.
 
-Your role:
-- Break down complex technical terms into simple, easy-to-understand explanations
-- Use analogies and real-world examples when helpful
-- Keep explanations concise (2-4 sentences max)
-- Be friendly and encouraging
-- Avoid being condescending
+Your Task:
+Return a JSON object with 3 separate explanations for the requested term:
 
-Format your response as a clear, direct explanation without meta-commentary.`
+1. "concise": A strict, dictionary-style technical definition (max 2 sentences).
+2. "simple": A creative, "Equivalent Like I'm 5" (ELI5) analogy-based explanation. Start with "Think of it like..." or "Imagine..." (max 3 sentences).
+3. "deep_dive": A deeper look providing context, history, or why it matters (max 4 sentences).
+
+Output must be valid JSON with keys: "concise", "simple", "deep_dive".`
 
 	model.SystemInstruction = &genai.Content{
 		Parts: []genai.Part{genai.Text(systemPrompt)},
 	}
 
 	// Create the prompt
-	prompt := fmt.Sprintf("Explain this term or concept simply: %s", text)
+	prompt := fmt.Sprintf("Explain this term: %s", text)
 
 	// Generate response
 	resp, err := model.GenerateContent(ctx, genai.Text(prompt))
 	if err != nil {
-		return "", fmt.Errorf("failed to generate content: %w", err)
+		return nil, fmt.Errorf("failed to generate content: %w", err)
 	}
 
 	if len(resp.Candidates) == 0 || len(resp.Candidates[0].Content.Parts) == 0 {
-		return "", fmt.Errorf("no response generated")
+		return nil, fmt.Errorf("no response generated")
 	}
 
 	// Extract text from response
-	explanation := fmt.Sprintf("%v", resp.Candidates[0].Content.Parts[0])
-	return explanation, nil
+	responseText := fmt.Sprintf("%v", resp.Candidates[0].Content.Parts[0])
+
+	// Parse JSON
+	var explanation ExplainResponse
+	if err := json.Unmarshal([]byte(responseText), &explanation); err != nil {
+		// Fallback if JSON parsing fails (or model returns markdown block)
+		// We'll return just a simple explanation in that case to be safe, or just the raw text
+		// But usually with ResponseMIMEType it should be clean.
+		log.Printf("Failed to unmarshal JSON from AI: %v\nRaw: %s", err, responseText)
+		return nil, fmt.Errorf("failed to parse AI response")
+	}
+
+	return &explanation, nil
 }
 
 // enableCORS adds CORS headers for Chrome extension compatibility

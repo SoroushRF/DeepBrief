@@ -70,5 +70,6 @@ async function fetchExplanation(text) {
     throw new Error(data.error);
   }
 
-  return data.explanation;
+  // Return the whole object (contains concise, simple, deep_dive)
+  return data;
 }
