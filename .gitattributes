@@ -1,14 +1,22 @@
-# Exclude specific large/generated files from stats
+# Strict Language Filtering
+
+# 1. HIDE these from stats (Vendor/Text)
 extension/content.js linguist-vendored
 extension/icons/** linguist-vendored
 docs/** linguist-documentation
+*.css linguist-vendored
+*.html linguist-vendored
+*.env linguist-vendored
+.env* linguist-vendored
 
-# Vendor Go metadata so they don't split the "Go" stats (Go Checksums, Go Module)
+# 2. Hide Go Metadata (Checksums/Modules) to keep "Go" pure
 go.sum linguist-vendored
 go.mod linguist-vendored
 backend/go.sum linguist-vendored
 backend/go.mod linguist-vendored
 
-# Ensure core code is detected
+# 3. FORCE these to be detected (The only things we want to see)
 backend/** linguist-detectable=true
 extension/background.js linguist-detectable=true
+backend/Dockerfile linguist-detectable=true
+Dockerfile linguist-detectable=true
