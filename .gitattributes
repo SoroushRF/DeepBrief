@@ -1,8 +1,14 @@
-# Documentation
+# Exclude specific large/generated files from stats
+extension/content.js linguist-vendored
+extension/icons/** linguist-vendored
 docs/** linguist-documentation
 
-# Mark the entire extension folder as vendored (ignored by stats)
-extension/** linguist-vendored
+# Vendor Go metadata so they don't split the "Go" stats (Go Checksums, Go Module)
+go.sum linguist-vendored
+go.mod linguist-vendored
+backend/go.sum linguist-vendored
+backend/go.mod linguist-vendored
 
-# Keep backend visible (Go)
+# Ensure core code is detected
 backend/** linguist-detectable=true
+extension/background.js linguist-detectable=true
