@@ -3,6 +3,8 @@ docs/** linguist-documentation
 
 # FORCE content.js to be treated as plain text (removes it from language bar)
 extension/content.js linguist-language=Text
+extension/styles.css linguist-language=Text
+extension/popup.html linguist-language=Text
 extension/manifest.json linguist-language=JSON
 extension/icons/** linguist-vendored
 
