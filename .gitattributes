@@ -1,3 +1,9 @@
-# Ignore extension files for GitHub language statistics
-extension/** linguist-vendored
+# Documentation
 docs/** linguist-documentation
+
+# Ignore CSS and HTML to keep the language focus on Go and JS logic
+extension/styles.css linguist-vendored
+extension/popup.html linguist-vendored
+extension/icons/** linguist-vendored
+
+# Note: background.js and content.js will now count towards the "JavaScript" stat!
