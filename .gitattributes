@@ -1,9 +1,12 @@
 # Documentation
 docs/** linguist-documentation
 
-# Ignore CSS and HTML to keep the language focus on Go and JS logic
+# Ignore heavy frontend files to keep Go dominant
 extension/styles.css linguist-vendored
 extension/popup.html linguist-vendored
 extension/icons/** linguist-vendored
 
-# Note: background.js and content.js will now count towards the "JavaScript" stat!
+# Hide content.js (it is the largest JS file) to reduce JS stats
+extension/content.js linguist-vendored
+
+# background.js will remain visible to represent the JS presence
