@@ -26,10 +26,10 @@ A secure, decoupled architecture ensures speed, privacy, and scalability.
 
 ```mermaid
 graph LR
-    A[Chrome Extension] -->|HTTPS| B[Go Backend (Cloud Run)]
-    B -->|API Key| C[Gemini 2.5 AI Model]
-    C -->|JSON| B
-    B -->|JSON| A
+    A[Chrome Extension] -- HTTPS --> B[Go Backend Cloud Run]
+    B -- API Key --> C[Gemini 2.5 AI Model]
+    C -- JSON --> B
+    B -- JSON --> A
 ```
 
 **Why this design?**
