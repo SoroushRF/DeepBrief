@@ -1,0 +1,10 @@
+# Extension development files
+.DS_Store
+Thumbs.db
+*.crx
+*.pem
+*.zip
+
+# IDE
+.vscode/
+.idea/
