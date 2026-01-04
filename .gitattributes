@@ -1,12 +1,8 @@
 # Documentation
 docs/** linguist-documentation
 
-# FORCE content.js to be treated as plain text (removes it from language bar)
-extension/content.js linguist-language=Text
-extension/styles.css linguist-language=Text
-extension/popup.html linguist-language=Text
-extension/manifest.json linguist-language=JSON
-extension/icons/** linguist-vendored
+# Mark the entire extension folder as vendored (ignored by stats)
+extension/** linguist-vendored
 
-# background.js will be the ONLY file counting as JavaScript
-extension/background.js linguist-detectable=true
+# Keep backend visible (Go)
+backend/** linguist-detectable=true
