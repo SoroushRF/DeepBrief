@@ -1,21 +1,21 @@
-# Strict Language Filtering
+# Strict Language Filtering with Explicit Paths
 
 # 1. HIDE these from stats (Vendor/Text)
 extension/content.js linguist-vendored
+extension/styles.css linguist-vendored
+extension/popup.html linguist-vendored
 extension/icons/** linguist-vendored
 docs/** linguist-documentation
-*.css linguist-vendored
-*.html linguist-vendored
-*.env linguist-vendored
+backend/.env linguist-vendored
 .env* linguist-vendored
 
-# 2. Hide Go Metadata (Checksums/Modules) to keep "Go" pure
+# 2. Hide Go Metadata (Checksums/Modules)
 go.sum linguist-vendored
 go.mod linguist-vendored
 backend/go.sum linguist-vendored
 backend/go.mod linguist-vendored
 
-# 3. FORCE these to be detected (The only things we want to see)
+# 3. FORCE these to be detected
 backend/** linguist-detectable=true
 extension/background.js linguist-detectable=true
 backend/Dockerfile linguist-detectable=true
