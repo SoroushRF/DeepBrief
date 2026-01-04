@@ -1,182 +1,98 @@
-# DeepBrief 🚀
+# 🧠 DeepBrief
 
-**AI-Powered Jargon Explainer Chrome Extension**
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Go](https://img.shields.io/badge/Go-1.21-blue.svg)](https://golang.org/) [![Gemini AI](https://img.shields.io/badge/AI-Gemini_2.5-purple.svg)](https://deepmind.google/technologies/gemini/) [![Cloud Run](https://img.shields.io/badge/Cloud-Google_Run-orange.svg)](https://cloud.google.com/run) [![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-green.svg)](https://developer.chrome.com/docs/extensions/)
 
-DeepBrief is a full-stack Chrome extension that helps you understand technical jargon instantly. Simply highlight any technical term on a webpage, right-click, and get a clear, student-friendly explanation powered by Google's Gemini 2.5 Flash Lite AI.
+> **"Like a university professor in your pocket."**
+
+**DeepBrief** is a premium Chrome extension that transforms complex technical jargon into clear, multi-tiered explanations instantly. Powered by Google's state-of-the-art **Gemini 2.5 Flash Lite**, it delivers context-aware insights directly on any webpage.
 
 ---
 
-## ✨ Features
+## ✨ Luxury Features
 
-- 🎯 **Right-Click to Explain** - Highlight any text and get instant explanations
-- 🧠 **Three Learning Modes**:
-  - **⚡ Concise:** Strict, dictionary-style definition
-  - **💡 Simple:** Creative analogies (ELI5 style)
-  - **🧐 Deep Dive:** History, context, and deeper analysis
-- 🤖 **AI-Powered** - Uses Gemini 2.5 Flash Lite for intelligent, context-aware explanations
-- 🔒 **Secure Architecture** - API keys hidden in backend proxy (not exposed in extension)
-- ⚡ **Fast & Lightweight** - Optimized for speed with minimal overhead
-- 🎨 **Beautiful UI** - Sleek floating tooltips with smooth animations & tabs
+| Feature | Description |
+| :--- | :--- |
+| **⚡ Instant Explanations** | Right-click any text to get an immediate AI breakdown. |
+| **🧠 3-Mode Intelligence** | Switch between **Concise** (Dictionary), **Simple** (ELI5), and **Deep Dive** (Context). |
+| **🎨 Glassmorphism UI** | A stunning, frosted-glass interface that feels native to modern OS aesthetics. |
+| **📋 Smart Actions** | One-click copy, smooth transitions, and keyboard-accessible navigation. |
+| **🔒 Enterprise Security** | API keys are proxy-shielded in a Go backend; no data is ever stored. |
 
 ---
 
 ## 🏗️ Architecture
 
-```
-┌─────────────────┐
-│  Chrome Browser │
-│   (Extension)   │
-└────────┬────────┘
-         │ HTTPS
-         ▼
-┌─────────────────┐
-│  Cloud Run API  │
-│   (Go Backend)  │
-└────────┬────────┘
-         │ API Key
-         ▼
-┌─────────────────┐
-│  Gemini 2.5 AI  │
-│  (Flash Lite)   │
-└─────────────────┘
+A secure, decoupled architecture ensures speed, privacy, and scalability.
+
+```mermaid
+graph LR
+    A[Chrome Extension] -->|HTTPS| B[Go Backend (Cloud Run)]
+    B -->|API Key| C[Gemini 2.5 AI Model]
+    C -->|JSON| B
+    B -->|JSON| A
 ```
 
-**Why this architecture?**
-- ✅ **Security**: API keys never exposed in client-side code
-- ✅ **Scalability**: Cloud Run auto-scales from 0 to 100 instances
-- ✅ **Cost-Effective**: Free tier covers 2M requests/month
-- ✅ **Best Practices**: Follows Chrome extension security guidelines
-
----
-
-## 🚀 Live Demo
-
-**Backend API:** `https://deepbrief-api-ble76liyba-uc.a.run.app`
-
-Try it:
-```bash
-curl -X POST https://deepbrief-api-ble76liyba-uc.a.run.app/explain \
-  -H "Content-Type: application/json" \
-  -d '{"text": "What is Docker?"}'
-```
-
----
-
-## 📁 Project Structure
-
-```
-DeepBrief/
-├── backend/              # Go backend API
-│   ├── main.go          # Main server with Gemini integration
-│   ├── Dockerfile       # Container configuration
-│   └── go.mod           # Go dependencies
-├── extension/           # Chrome extension (coming soon)
-└── docs/                # Documentation
-    ├── DEPLOYMENT.md    # Deployment guide
-    ├── BACKEND_README.md
-    └── TEST_COMMANDS.md
-```
+**Why this design?**
+- **Security:** Client never sees the API key.
+- **Speed:** Go backend on Cloud Run responds in milliseconds.
+- **Privacy:** State-less request handling.
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Backend
-- **Language:** Go 1.21
-- **AI Model:** Google Gemini 2.5 Flash Lite
-- **Hosting:** Google Cloud Run
-- **Container:** Docker (multi-stage build)
+### 🖥️ Frontend (Extension)
+- **Core:** ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black) **Vanilla JS (ES6+)**
+- **Styling:** ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white) **CSS3 (Variables, Flexbox, Animations)**
+- **Isolation:** **Shadow DOM** (Prevents style conflicts)
+- **Runtime:** **Manifest V3** Service Worker
 
-### Frontend (Extension)
-- **Framework:** Chrome Extension Manifest V3
-- **UI:** Shadow DOM for isolated styling
-- **Features:** Context menus, content scripts
-
----
-
-## 📚 Documentation
-
-- [Deployment Guide](docs/DEPLOYMENT.md) - Cloud Run deployment details
-- [Backend README](docs/BACKEND_README.md) - Backend API documentation
-- [Test Commands](docs/TEST_COMMANDS.md) - Local testing guide
+### ☁️ Backend (API)
+- **Language:** ![Go](https://img.shields.io/badge/Go-00ADD8?style=flat-square&logo=go&logoColor=white) **Go 1.21**
+- **AI Model:** **Google Gemini 2.5 Flash Lite**
+- **Infrastructure:** **Google Cloud Run (Serverless)**
+- **Containerization:** **Docker** (Multi-stage build)
 
 ---
 
-## 🧪 Development
+## 🚀 Status & Roadmap
 
-### Prerequisites
-- Go 1.21+
-- Google Cloud SDK
-- Gemini API Key from [Google AI Studio](https://aistudio.google.com/)
+The project is currently **Completed** and ready for production use.
 
-### Local Setup
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/SoroushRF/DeepBrief.git
-   cd DeepBrief/backend
-   ```
-
-2. **Set up environment:**
-   ```bash
-   cp .env.example .env
-   # Edit .env and add your GEMINI_API_KEY
-   ```
-
-3. **Run locally:**
-   ```bash
-   go mod download
-   go run main.go
-   ```
-
-4. **Test the API:**
-   ```bash
-   curl -X POST http://localhost:8080/explain \
-     -H "Content-Type: application/json" \
-     -d '{"text": "machine learning"}'
-   ```
+- [x] **Phase 1:** Backend API Development
+- [x] **Phase 2:** Cloud Deployment (Google Cloud Run)
+- [x] **Phase 3:** Extension Core (Manifest V3)
+- [x] **Phase 4:** Luxury UI Implementation (Tabs, Glassmorphism)
+- [x] **Phase 5:** Final Polish & Documentation
 
 ---
 
-## 🌐 Deployment
+## 📦 Installation (Local)
 
-Deploy to Google Cloud Run:
+1.  **Clone the Repo:**
+    ```bash
+    git clone https://github.com/SoroushRF/DeepBrief.git
+    cd DeepBrief
+    ```
 
-```bash
-gcloud run deploy deepbrief-api \
-  --source . \
-  --region us-central1 \
-  --allow-unauthenticated \
-  --set-env-vars GEMINI_API_KEY=your_key_here
-```
+2.  **Run Backend:**
+    ```bash
+    cd backend
+    cp .env.example .env # Add your GEMINI_API_KEY
+    go run main.go
+    ```
 
-See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed instructions.
-
----
-
-## 🔒 Security
-
-- ✅ API keys stored as environment variables (never in code)
-- ✅ Backend proxy pattern prevents key exposure
-- ✅ CORS configured for Chrome extension access
-- ✅ HTTPS-only communication
-- ✅ No sensitive data logged
-
----
-
-## 📊 Status
-
-- ✅ **Phase 1:** Backend API (Complete)
-- ✅ **Phase 2:** Cloud Deployment (Complete)
-- ⏳ **Phase 3:** Chrome Extension (In Progress)
-- ⏳ **Phase 4:** Testing & Polish (Pending)
-- ⏳ **Phase 5:** Documentation (Pending)
+3.  **Load Extension:**
+    - Go to `chrome://extensions/`
+    - Enable **Developer Mode**
+    - Click **Load Unpacked**
+    - Select the `extension` folder
 
 ---
 
 ## 📝 License
 
-This project is part of a portfolio demonstration.
+Distributed under the **MIT License**. See `LICENSE` for more information.
 
 ---
 
@@ -187,12 +103,6 @@ This project is part of a portfolio demonstration.
 
 ---
 
-## 🙏 Acknowledgments
-
-- Google Gemini AI for the powerful language model
-- Google Cloud Platform for hosting infrastructure
-- Chrome Extensions team for the excellent documentation
-
----
-
-**Built with ❤️ using Go, Gemini AI, and Cloud Run**
+<center>
+  <i>Built with ❤️ using Go, Gemini AI, and pure Web Technologies</i>
+</center>
